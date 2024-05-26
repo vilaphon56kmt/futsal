@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Top Bảng xếp hàng</title>
+    <link href="aset/jquery-confirm.min.css" rel="stylesheet" />
+    <link href="aset/giaodien.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="aset/mycode.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            background: url('https://scontent.fhan3-3.fna.fbcdn.net/v/t31.18172-8/622662_454594491250818_1922765641_o.jpg?_nc_cat=111&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeEmJ2YfpzLYA-tGEXm8omr7bj5aCMaijTJuPloIxqKNMmjhVyg1kV1BXzpK4vEVxRn5XI_Myvl4eXnW_YSdD-6M&_nc_ohc=bqQWLWHpQSoQ7kNvgGvIqNh&_nc_ht=scontent.fhan3-3.fna&oh=00_AYCGpi57EEIDxlo-kcVZFnZB-7TYFH8XA9LCttSYpHIC8Q&oe=667960CF') no-repeat center center;
+        }
+
+        #header {
+            background-color: #282c34;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 30px;
+            border-bottom: 5px solid #4CAF50;
+        }
+
+        #table-container {
+            width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 1200px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        #header {
+            text-align: center; /* Canh giữa các ảnh */
+        }
+
+            #header img {
+                width: 150px; /* Điều chỉnh kích thước chiều rộng của các ảnh */
+                height: auto; /* Tự động tính toán chiều cao để giữ tỷ lệ */
+                margin: 0 10px; /* Khoảng cách giữa các ảnh */
+                display: inline-block; /* Hiển thị các ảnh cùng hàng với nhau */
+                animation: blink 5s infinite;
+            }
+
+        @keyframes blink {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateX(0%);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        #content-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .side-div {
+            background: url('https://s3-ap-southeast-1.amazonaws.com/tm-img-poster-event/530f6da160f811ee911101117567899b.jpg?format=basic&resize=w425,h610') no-repeat center center;
+            background-size: cover;
+            width: 20%;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        #pointsChart {
+            width: 65%; /* Điều chỉnh kích thước của biểu đồ */
+            height: auto;
+            margin: auto;
+        }
+
+        #team-details table td {
+            font-weight: bold;
+            padding: 5px;
+        }
+
+        /* Thêm CSS để thay đổi màu nền của dòng khi hover */
+        .team-row-hover {
+            background-color: #a0d2eb !important;
+        }
+
+        /* CSS để làm chữ trong bảng chi tiết đậm hơn */
+        #team-details table td {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <img src="https://media.nationthailand.com/uploads/images/md/2024/04/oWtGjaJv1dgQ9SXTJW3S.webp?x-image-process=style/lg-webp" alt="Premier League" />
+        <img src="https://scontent.fhan4-6.fna.fbcdn.net/v/t39.30808-6/348552861_1299986060933485_291668840292084490_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeEMPbfjwV8080vXVf4xWQMMjUMls8Hlg5iNQyWzweWDmIid8omTcUCu2X3Qj--Y_5tvAzP3llF0id2pXZD6FkWN&_nc_ohc=dhEKpQ7UERwQ7kNvgEECtZ1&_nc_ht=scontent.fhan4-6.fna&oh=00_AYDU2yFzRU93a1tC5fHlGlYSgaNwoUC_bxVQ3ZlWhwNIOw&oe=66578D24" alt="Premier League" />
+        <img src="https://scontent.fhan3-4.fna.fbcdn.net/v/t39.30808-6/344735466_1293897214817218_8475605660551518460_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeHZMzeF-tHUg0OUkOuUQ0b5c4pIWMBNdCZzikhYwE10Jr6hneDD1jNFJqwXS7cjB2fl6Ggq9uNYiZCcNUGPMYlQ&_nc_ohc=QRjyfXg8_6AQ7kNvgGnpVNn&_nc_ht=scontent.fhan3-4.fna&oh=00_AYAkzdskJumiTik40M4BqUDTA_gAandv21EmmzblBjdi9Q&oe=6657907B" alt="La Liga" />
+        <img src="https://static.thairath.co.th/media/dFQROr7oWzulq5Fa4VlYiPtDkcMXbDqxJpDur7zvkf5PJooOaT34wIOgz3NRipS8PGF.jpg" alt="Serie A" />
+        <img src="https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-6/421274660_812242897610957_329347109063419280_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeHgeIY-XcAToKqG5dx0emMFpH8CB-jEsoakfwIH6MSyhgu_LGFM1CxSswpYbPw6Zyzng7SdW3TQitF5beGgxBk0&_nc_ohc=bTrygx0Vuq8Q7kNvgGhnDoh&_nc_ht=scontent.fhan4-1.fna&oh=00_AYD-bC9VzltcdnJ-ZPerPVLcAwKMcRw1ByszZnlJ60AMdA&oe=665783EB" alt="Bundesliga" />
+        <img src="https://scontent.fhan4-6.fna.fbcdn.net/v/t39.30808-6/421283076_812242844277629_5763817820471498552_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeEiHthCIkqm8gthZ_anr7xJtP2KwzeoLge0_YrDN6guBxP43BkD2h-t4sZG0kJrAwXKKkGrPDr_uL0zza9Ju-gp&_nc_ohc=xm3hqaM-l0wQ7kNvgGRkUGy&_nc_ht=scontent.fhan4-6.fna&oh=00_AYCtzmWAQqtqe93gcDWnbHMGrAs-RrMH0mdYUBCPlomT_g&oe=665762EE" alt="Ligue 1" />
+        <img src="https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-6/421264387_812241130944467_7831811680934407301_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeH8g5A9XtpiXBD7mssq291Cddew6isNB1Z117DqKw0HVioVs1vixIPYM7c9Fw9vJ9VL-_bjJSMgjNGFrfZbagET&_nc_ohc=sipjH3zaxwwQ7kNvgH34c9U&_nc_ht=scontent.fhan4-1.fna&oh=00_AYCNGKP3-IdSrFABpx08A4xdIlCZ0qIQdLY-XFMNip1kag&oe=66578F13" alt="Ligue 1" />
+    </div>
+
+    <div id="content-container">
+        <div class="side-div">
+            <img src="" />
+        </div>
+        <div id="table-container">
+            <!-- Bảng HTML sẽ được chèn vào đây bởi jQuery -->
+        </div>
+        <div class="side-div"></div>
+
+        <div id="team-details" style="width: 80%; margin: auto; border: 0.5px solid #ccc; border-radius: 5px; background-color: rgba(240, 240, 240, 0.2); padding: 20px; display: none;">
+            <!-- Bảng chi tiết sẽ được hiển thị ở đây -->
+        </div>
+    </div>
+
+
+    <div style="width: 80%; margin: auto; border: 0.5px solid #ccc; border-radius: 5px; background-color: rgba(240, 240, 240, 0.2);">
+        <canvas id="pointsChart"></canvas>
+    </div>
+
+</body>
+</html>
